@@ -1,6 +1,7 @@
 <?php 
-
-$version_db = '1.0';
+/**
+ * Instalation and upgrade plugin table
+ */
 $current_version = get_option( 'consapES');
 
 function consap_expandore_shipping_register_db(){
@@ -23,7 +24,7 @@ function consap_expandore_shipping_register_db(){
 }
 
 function consap_expandore_shipping_update_db(){    
-    if($current_version != $version_db){
+    if( $current_version != EXPANDORE_VERSION ){
         consap_expandore_shipping_register_db();
         update_option( 'consapES_version', $version_db );
     }

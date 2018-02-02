@@ -6,15 +6,16 @@
  * Version: 1.0
  */
  
-if( !defined('WPINC')){ die('Access Denied'); }
+if( !defined('ABSPATH')){ die('Access Denied'); }
 
-include dirname(__FILE__).'/install.php';
-include dirname(__FILE__).'/class_shipping.php';
+define('EXPANDORE_VERSION','1.0');
+define('EXPANDORE_PATH', plugin_dir_path( __FILE__ ));
+define('EXPANDORE_URL', plugin_dir_url( __FILE__ ));
 
 /**
- * Install
+ * Load activation 
  */
-
+require_once EXPANDORE_PATH .'/install.php';
 register_activation_hook( __FILE__, 'consap_expandore_shipping_register_db' );
 
 /**
@@ -22,41 +23,8 @@ register_activation_hook( __FILE__, 'consap_expandore_shipping_register_db' );
  */
 if( in_array('woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ))){
     function consap_expandore_shipping_init(){
-        if( ! class_exists('WC_Consap_Expandore_Shipping_Method') ){
-            class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
-
-                /**
-                 * Construct shipping method
-                 * 
-                 * @access public
-                 * @return void
-                 */
-                public function __construct(){
-                    $this->id                   = 'expandore';
-                    $this->method_title         = __('Expandore Shipping', 'consap');
-                    $this->method_description   = __('Custom Shipping Method for Expandore by Consap', 'consap');
-
-                    $this->enable               = 'yes';
-
-
-                }
-
-                function init(){
-                    $this->init_form_fields();
-                    $this->init_settings();
-
-                    add_action( 'woocommerce_update_options_shipping_'. $this->id , array($this, 'process_admin_options'));
-                }
-
-                function init_form_fields(){
-
-                }
-
-                public function calculate_shipping($package) {
-
-                }
-            }
-        }
+        require_once EXPANDORE_PATH . '/includes/class_shipping_calc.php';
+        require_once EXPANDORE_PATH . '/includes/class_shipping.php';        
     }
 
     add_action( 'woocommerce_shipping_init', 'consap_expandore_shipping_init');
