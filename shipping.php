@@ -15,7 +15,7 @@ define('EXPANDORE_URL', plugin_dir_url( __FILE__ ));
 /**
  * Load activation 
  */
-require_once EXPANDORE_PATH .'/install.php';
+require_once EXPANDORE_PATH .'/includes/install.php';
 register_activation_hook( __FILE__, 'consap_expandore_shipping_register_db' );
 
 /**
