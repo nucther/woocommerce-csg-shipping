@@ -15,11 +15,10 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
      */
     public function __construct(){
         $this->id                   = 'expandore';
-        $this->method_title         = __('Expandore Shipping', 'consap');
-        $this->method_description   = __('Custom Shipping Method for Expandore by Consap', 'consap');
+        $this->method_title         = __('Expandore Shipping', 'consap');        
 
         $this->init();
-        $this->enable               = ( isset($this->settings['enable'] ) )? $this->settings['enable'] : 'no';
+        $this->enable               = true;
     }
 
     function init(){
@@ -31,26 +30,44 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
 
     function init_form_fields(){
         $this->form_fields = array(
-            'enable' => array(
-                'title' => __('Enable','consap'),
-                'type' => 'checkbox',
-                'description' => __('Enable this shipping.', 'consap'),
-                'default' => 'yes'
-            ),
+                'etabBox' => array(
+                    'type' => 'expandore_tab_box'
+                )
+            );
+    }
 
-            'fuel-subcharge' => array(
-                'title' => __('Fuel Subcharge', 'consap'),
-                'type' => 'text',
-                'description' => __('How much percentage (%) fuel subcharge', 'consap')                            
-            ),
+    public function generate_expandore_tab_box_html(){
+        $subsection = isset($_GET['subsection'])? esc_attr( $_GET['subsection'] ) : 'general';
 
-            'safety-factor' => array(
-                'title' => __('Safety Factor', 'consap'),
-                'type' => 'text',
-                'description' => __('Shipping safety factor', 'consap')
-            )
-            
+        echo '<div class="wrap">
+            <style>
+                .woocommerce-save-button{ display:none !important; }
+            </style>
+        ';
+        $this->menu($subsection);
+
+        switch($subsection){
+            default: 
+                require_once EXPANDORE_PATH .'/includes/tab_general.php';
+                break;
+        }
+        echo '</div>';
+    }
+
+    private function menu($active = 'general'){
+        $tabs = array(
+            'general' => __('General', 'consap')
         );
+
+        $html = '<h2 class="nav-tab-wrapper">';
+        foreach($tabs as $tab => $name){
+            $class = ($tab === $active)? 'nav-tab-active' : '';
+
+            $html .='<a class="nav-tab '. $class .'" href="?page=wc-settings&tab=shipping&section=expandore&subsection='. $tab .'">'. $name .'</a>';
+        }
+        $html .='</h2>';
+
+        echo $html;
     }
 
     public function calculate_shipping($package) {
