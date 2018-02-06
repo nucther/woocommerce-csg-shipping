@@ -4,9 +4,24 @@
  */
  $calc = new Consap_Shipping_class();
 
+ $csv = null;
+
+
  if( isset($_POST['save_general']) ){
      $calc->update_option('fuel_subcharge', esc_attr( $_POST['expandore_shipping_fuel_subcharge'] ));
      $calc->update_option('safety_factor', esc_attr( $_POST['expandore_shipping_safety_factor'] ));
+ }
+
+ if( isset($_POST['upload_csv'])){
+     $file = $_FILES['csv'];
+
+     $movefile = wp_handle_upload( $file, array('test_form' => false));
+
+     if( $movefile && ! isset($movefile['error'])){         
+         $csv = $movefile['file'];
+     } else{
+         print_r($movefile);
+     }
  }
 
 ?>
@@ -34,16 +49,13 @@
                 <tr>
                     <th></th>
                     <td>
-                        <button class="button button-primary" type="submit" name="save_general">Save settings</button>
+                        <button class="button button-primary" type="submit" name="save_general" value="save">Save settings</button>
                     </td>
                 </tr>
             </tbody>
         </table>       
     
     <hr class="wp-header-end">
-
-    
-        <input type="hidden" name="ex-action" value="csv-upload">
 
         <table class="form-table wc-shipping-zone-settings" style="border-top:1px solid #ccc;margin-top:20px;">
             <tbody>
@@ -59,11 +71,96 @@
                 <tr>
                     <th></th>
                     <td>
-                        <button class="button button-primary" type="submit">Upload CSV</button>
+                        <button class="button button-primary" type="submit" name="upload_csv" value="upload">Upload CSV</button>
                     </td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td>
+                    <?php 
+                        if(! is_null($csv)){
+                            if( ($handle = fopen($csv,'r') ) !== FALSE){
+                                $type = '';
+                                $provider = '';
+                                $package = '';                                
+                                $clean = false;
+                                $exception = array('type','name provider','package','weight','country name');
+                                $num = 0;
+                                while( ($data = fgetcsv($handle, 1000, ',')) !== FALSE){                                    
+                                    switch(strtolower($data[0])){
+                                        case 'type': 
+                                            $type = $data[1];
+                                            echo 'Detected : '. $type .'<br>';
+                                            $clean = true;
+                                            $num = 0;
+                                            break;
+                                        case 'name provider':
+                                            $provider= $data[1];
+                                            echo 'Provider: '. $provider .'<br>';
+                                            break;
+                                        case 'package': 
+                                            $package = $data[1];
+                                            $calc->add_package($provider, $package);
+                                            echo 'Package: '. $package .'<br>';
+                                            break;
+                                        case 'weight':                                             
+                                            $zone = [];
+                                            foreach($data as $z){
+                                                $zone[] = preg_replace('/zone\s?/i','', $z);
+                                            }                                            
+                                            break;
+                                    }
+
+                                    if($clean){
+                                        if( strtolower($type) == 'country zone'){
+                                            $calc->clean_country($provider);
+                                        }
+                                        
+                                        if( strtolower($type)=='shipping rate'){
+                                            $calc->clean_rate($provider, $package);
+                                        }
+
+                                        $clean = false;
+                                    }
+
+                                    if( strtolower($type) == 'country zone'){
+                                        $cv=''; $ct='';
+                                        if(isset($data[2]) && !empty($data[2])){
+                                            $ct = 'postcode';
+                                            $cv = $data[2];
+                                        }
+                                        
+                                        if( isset($data[3]) && !empty($data[3])){
+                                            $ct = 'city';
+                                            $cv = $data[3];
+                                        }
+                                        
+                                        if( !empty($data[0]) && !in_array(strtolower($data[0]), $exception ) ){
+                                            $calc->add_country($provider,$data[1], $data[0],$ct, $cv, $data[4] );
+                                            $num++;$ct='';
+                                        }
+                                    }
+
+                                    if( strtolower($type) == 'shipping rate'){
+                                        $condition = '';
+                                        foreach($data as $n => $value){
+                                            if(strtolower($zone[$n]) == 'weight'){
+                                                $condition = $data[0];
+                                            }else{
+                                                if( !empty($data[0]) && !in_array(strtolower($data[0]), $exception ) ){
+                                                    $calc->add_rate($provider, $package, $condition, $zone[$n], $value);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                            fclose($handle);
+                            
+                            unlink($csv);
+                        }
+                    ?>
+                    </td>
                 </tr>
             </tbody>
         </table>        
