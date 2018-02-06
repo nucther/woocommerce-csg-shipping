@@ -56,7 +56,8 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
 
     private function menu($active = 'general'){
         $tabs = array(
-            'general' => __('General', 'consap')
+            'general' => __('General', 'consap'),
+            'import' => __('Import CSV', 'consap'),
         );
 
         $html = '<h2 class="nav-tab-wrapper">';
