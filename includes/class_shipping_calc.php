@@ -157,10 +157,41 @@ class Consap_Shipping_Class{
     }
 
     public function get_shipping($weight, $country, $city, $postcode){
-        global $wpdb;
+        global $wpdb;        
 
-        $zone = $wpdb->get_results("SELECT name, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='zone' AND name like '". $country ."%'");
+        $zones = $wpdb->get_results("SELECT name, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='zone' AND name like '". $country ."%'");
 
+        $_shipping_zone = array();
+        foreach($zones as $zone){
+            $_shipping_zone[] = array(
+                'provider' => $zone->provider,
+                'zone' => $zone->value
+            );
+        }
+
+        $_shipping_cost = array();
+        $weight = $this->round($weight);
+
+        $shipping = array();
+        foreach($_shipping_zone as $sz){
+            $cost = $wpdb->get_results("SELECT provider,package, value from ". $wpdb->prefix ."expandore_shipping WHERE provider='". $sz['provider'] ."' AND condition_type='zone' AND condition_value='". $sz['zone'] ."'");
+            $shipping[] = array(
+                'id' => $cost[0]->provider.'_'. $cost[0]->package,
+                'cost' => $cost[0]->value
+            );
+        }
         
+        return $shipping;
     }
+
+    private function round($num){
+        $round = round($num * 2) / 2;
+        if( $num > $round){
+            return sprintf('%0.2f', round($num) );
+        }
+        else {
+            return sprintf('%0.2f', $round );
+        }
+    }
+    
 }
