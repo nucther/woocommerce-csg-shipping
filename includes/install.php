@@ -12,6 +12,8 @@ function consap_expandore_shipping_register_db(){
         ID mediumint(12) NOT NULL AUTO_INCREMENT,
         name varchar(250) NOT NULL,
         type varchar(100) NOT NULL,
+        provider varchar(100) NOT NULL,
+        package varchar(100) NOT NULL,        
         condition_type varchar(100) NOT NULL,
         condition_value varchar(300) NOT NULL,
         value text NOT NULL,

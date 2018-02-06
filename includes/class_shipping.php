@@ -87,7 +87,16 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
 
         $weight = wc_get_weight( $weight, 'kg' );
 
-        
+        $calc = new Consap_Shipping_Class();
+        $shippings = $calc->get_shipping($weight, $country, $city, $postcode);
+
+        foreach($shippings as $shipping){
+            $this->add_rate(array(
+                'id' => $this->get_rate_id($shipping->id),
+                'label' => $shipping->name,
+                'cost' => $shipping->cost
+            ));
+        }
         
     }
 }

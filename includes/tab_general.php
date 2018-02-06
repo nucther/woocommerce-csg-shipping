@@ -40,7 +40,7 @@
                             foreach($packages as $package){
                                 ?>
                                     <input type="checkbox" name="package[]" value="<?php echo $package->value; ?>" id="<?php echo $package->value; ?>" <?php if( $package->condition_value ){ echo 'checked="checked"'; } ?>>
-                                    <label for="<?php echo $package->value; ?>"><?php echo $package->name; ?></label>
+                                    <label for="<?php echo $package->value; ?>"><?php echo $package->name; ?></label><br>
                                 <?php
                             }
                         ?>

@@ -77,15 +77,15 @@ if( isset($_POST['upload_csv'])){
                                     }
 
                                     if($clean){
-                                        if( strtolower($type) == 'country zone'){
+                                        if( strtolower($type) == 'country zone' && !empty($provider)){
                                             $calc->clean_country($provider);
+                                            $clean = false;
                                         }
                                         
-                                        if( strtolower($type)=='shipping rate'){
+                                        if( strtolower($type)=='shipping rate' && !empty($provider) && !empty($package) ){
                                             $calc->clean_rate($provider, $package);
-                                        }
-
-                                        $clean = false;
+                                            $clean = false;
+                                        }                                        
                                     }
 
                                     if( strtolower($type) == 'country zone'){

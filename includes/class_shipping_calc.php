@@ -78,8 +78,9 @@ class Consap_Shipping_Class{
         global $wpdb;
 
         $wpdb->insert($wpdb->prefix .'expandore_shipping', array(
-            'name' => strtoupper($country_code) .'_'. sanitize_title( esc_attr( $provider ) ).'_'. esc_attr( $country_name ),
+            'name' => strtoupper($country_code) .'_'. esc_attr( $country_name ),
             'type' => 'zone',
+            'provider' => sanitize_title( esc_attr( $provider ) ),
             'condition_type' => $condition,
             'condition_value' => $condition_value,
             'value' => esc_attr( $zone )
@@ -96,9 +97,8 @@ class Consap_Shipping_Class{
      * @return void
      */
     public function clean_country($provider){
-        global $wpdb;
-
-        return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE name like '%_". sanitize_title( esc_attr( $provider ) ) ."_%' AND type='zone'");
+        global $wpdb;        
+        return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE provider='". sanitize_title( esc_attr( $provider ) ) ."' AND type='zone'");
     }
     
 
@@ -106,8 +106,10 @@ class Consap_Shipping_Class{
         global $wpdb;
 
         $wpdb->insert( $wpdb->prefix .'expandore_shipping', array(
-            'name' => sanitize_title( esc_attr( $provider ) ) .'_'. sanitize_title( esc_attr($package) ) .'_'. $condition,
+            'name' =>  $condition,
             'type' => 'rate',
+            'provider' => sanitize_title( esc_attr( $provider ) ),
+            'package' => sanitize_title( esc_attr($package) ),
             'condition_type' => 'zone',
             'condition_value' => esc_attr( $zone ),
             'value' => esc_attr( $value )
@@ -126,7 +128,7 @@ class Consap_Shipping_Class{
     public function clean_rate($provider, $package){
         global $wpdb;
 
-        return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE name like '". sanitize_title( esc_attr( $provider )) ."_". sanitize_title( esc_attr( $package )) ."%' AND type='rate'");
+        return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE provider='". sanitize_title( esc_attr( $provider )) ."' AND package='". sanitize_title( esc_attr( $package )) ."' AND type='rate'");
     }
 
 
@@ -138,6 +140,8 @@ class Consap_Shipping_Class{
         $wpdb->insert( $wpdb->prefix. 'expandore_shipping', array(
             'name' => esc_attr( $provider ) .' '. esc_attr( $package ),
             'type' => 'package',
+            'provider' => esc_attr( $provider ),
+            'package' => esc_attr( $package ),
             'condition_value' => true,
             'value' => sanitize_title( esc_attr( $provider )).'_'. sanitize_title( esc_attr( $package ) )
         ));
@@ -153,6 +157,10 @@ class Consap_Shipping_Class{
     }
 
     public function get_shipping($weight, $country, $city, $postcode){
+        global $wpdb;
+
+        $zone = $wpdb->get_results("SELECT name, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='zone' AND name like '". $country ."%'");
+
         
     }
 }
