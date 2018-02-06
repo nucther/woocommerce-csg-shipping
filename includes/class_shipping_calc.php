@@ -7,10 +7,7 @@
 class Consap_Shipping_Class{
 
     public function Consap_Shipping_Class(){
-    }
-
-    public function get_shipping_types(){
-    }
+    }   
 
     /**
      * Get options value
@@ -81,7 +78,7 @@ class Consap_Shipping_Class{
         global $wpdb;
 
         $wpdb->insert($wpdb->prefix .'expandore_shipping', array(
-            'name' => sanitize_title( esc_attr( $provider ) ).'_'. strtolower($country_code) .'_'. esc_attr( $country_name ),
+            'name' => strtoupper($country_code) .'_'. sanitize_title( esc_attr( $provider ) ).'_'. esc_attr( $country_name ),
             'type' => 'zone',
             'condition_type' => $condition,
             'condition_value' => $condition_value,
@@ -101,7 +98,7 @@ class Consap_Shipping_Class{
     public function clean_country($provider){
         global $wpdb;
 
-        return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE name like '". sanitize_title( esc_attr( $provider ) ) ."%' AND type='zone'");
+        return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE name like '%_". sanitize_title( esc_attr( $provider ) ) ."_%' AND type='zone'");
     }
     
 
@@ -141,7 +138,21 @@ class Consap_Shipping_Class{
         $wpdb->insert( $wpdb->prefix. 'expandore_shipping', array(
             'name' => esc_attr( $provider ) .' '. esc_attr( $package ),
             'type' => 'package',
+            'condition_value' => true,
             'value' => sanitize_title( esc_attr( $provider )).'_'. sanitize_title( esc_attr( $package ) )
         ));
+    }
+
+    public function get_packages($enableOnly=false){
+        global $wpdb;
+        $sql = '';        
+        if($enableOnly){
+            $sql = " AND condition_value='enable'";
+        }
+        return $wpdb->get_results("SELECT name, condition_value, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='package'". $sql);
+    }
+
+    public function get_shipping($weight, $country, $city, $postcode){
+        
     }
 }

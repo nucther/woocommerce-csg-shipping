@@ -74,7 +74,20 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
         echo $html;
     }
 
-    public function calculate_shipping($package) {
+    public function calculate_shipping($package) {        
+        $country = $package['destination']['country'];
+        $postcode = $package['destination']['postcode'];
+        $city = $package['destination']['city'];
+        $weight = 0;
+
+        foreach($package['content'] as $item => $values){
+            $_product = $values['data'];
+            $weight = $weight + $_product->get_weight() * $values['quantity'];
+        }
+
+        $weight = wc_get_weight( $weight, 'kg' );
+
+        
         
     }
 }

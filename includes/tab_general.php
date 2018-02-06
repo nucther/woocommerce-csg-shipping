@@ -32,6 +32,22 @@
                 </tr>
 
                 <tr>
+                    <th class="titledesc">Enable package</th>
+                    <td class="">
+                        <?php 
+                            $packages = $calc->get_packages();
+
+                            foreach($packages as $package){
+                                ?>
+                                    <input type="checkbox" name="package[]" value="<?php echo $package->value; ?>" id="<?php echo $package->value; ?>" <?php if( $package->condition_value ){ echo 'checked="checked"'; } ?>>
+                                    <label for="<?php echo $package->value; ?>"><?php echo $package->name; ?></label>
+                                <?php
+                            }
+                        ?>
+                    </td>
+                </tr>
+
+                <tr>
                     <th></th>
                     <td>
                         <button class="button button-primary" type="submit" name="save_general" value="save">Save settings</button>
