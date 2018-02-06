@@ -47,6 +47,9 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
         $this->menu($subsection);
 
         switch($subsection){
+            case 'import': 
+                require_once EXPANDORE_PATH .'/includes/tab_import.php';
+                break;
             default: 
                 require_once EXPANDORE_PATH .'/includes/tab_general.php';
                 break;
