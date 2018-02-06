@@ -159,7 +159,7 @@ class Consap_Shipping_Class{
     public function get_shipping($weight, $country, $city, $postcode){
         global $wpdb;        
 
-        $zones = $wpdb->get_results("SELECT name, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='zone' AND name like '". $country ."%'");
+        $zones = $wpdb->get_results("SELECT name, provider, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='zone' AND name like '". $country ."%'");
 
         $_shipping_zone = array();
         foreach($zones as $zone){
@@ -174,7 +174,8 @@ class Consap_Shipping_Class{
 
         $shipping = array();
         foreach($_shipping_zone as $sz){
-            $cost = $wpdb->get_results("SELECT provider,package, value from ". $wpdb->prefix ."expandore_shipping WHERE provider='". $sz['provider'] ."' AND condition_type='zone' AND condition_value='". $sz['zone'] ."'");
+            $cost = $wpdb->get_results("SELECT provider,package, value from ". $wpdb->prefix ."expandore_shipping WHERE type='rate' AND provider='". $sz['provider'] ."' AND condition_value='". $sz['zone'] ."' AND name='". $weight ."'");
+            
             $shipping[] = array(
                 'id' => $cost[0]->provider.'_'. $cost[0]->package,
                 'cost' => $cost[0]->value

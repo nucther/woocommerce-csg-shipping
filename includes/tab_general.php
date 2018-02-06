@@ -32,7 +32,7 @@
                 </tr>
 
                 <tr>
-                    <th class="titledesc">Enable package</th>
+                    <th class="titledesc">Shipping Packages</th>
                     <td class="">
                         <?php 
                             $packages = $calc->get_packages();

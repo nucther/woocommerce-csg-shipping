@@ -80,9 +80,9 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
         $country = $package['destination']['country'];
         $postcode = $package['destination']['postcode'];
         $city = $package['destination']['city'];
-        $weight = 0;
+        $weight = 0;        
 
-        foreach($package['content'] as $item => $values){
+        foreach($package['contents'] as $item => $values){
             $_product = $values['data'];
             $weight = $weight + $_product->get_weight() * $values['quantity'];
         }
@@ -91,13 +91,26 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
 
         $calc = new Consap_Shipping_Class();
         $shippings = $calc->get_shipping($weight, $country, $city, $postcode);
-
+        
         foreach($shippings as $shipping){
-            $package = $wpdb->get_results("SELECT provider, package FROM ". $wpdb->prefix ."expandore_shipping WHERE value='". $shipping->id ."'");
+            $package = $wpdb->get_results("SELECT provider, package FROM ". $wpdb->prefix ."expandore_shipping WHERE value='". $shipping['id'] ."'");
+            
+            $provider = $package[0]->provider;
+            $cost = $shipping['cost'];
+            
+            if(($fs = $calc->get_option('fuel_subcharge')) !==''){
+                $cost = $cost * (1+ ($fs/100) );
+            }
+
+            if( ($sf = $calc->get_option('safety_factor')) !==''){
+                $cost = $cost * $sf;                
+            }
+            
+
             $this->add_rate(array(
-                'id' => $this->get_rate_id($shipping->id),
-                'label' => $package[0]->provider,
-                'cost' => $shipping->cost
+                'id' => $this->get_rate_id($shipping['id']),
+                'label' => $provider,
+                'cost' => $cost
             ));
         }
         
