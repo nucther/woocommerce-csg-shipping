@@ -5,6 +5,10 @@
  * @since 1.0
  */
 
+$calc = new Consap_Shipping_class();
+
+$csv = null;
+
 if( isset($_POST['upload_csv'])){
     $file = $_FILES['csv'];
 
@@ -19,7 +23,7 @@ if( isset($_POST['upload_csv'])){
 
  ?>
  <div class="table-box" style="border: 1px solid #ccc; border-top: none;padding: 20px;">    
- <table class="form-table wc-shipping-zone-settings" style="border-top:1px solid #ccc;margin-top:20px;">
+ <table class="form-table wc-shipping-zone-settings">
             <tbody>
                 <tr>
                     <th class="titledesc">

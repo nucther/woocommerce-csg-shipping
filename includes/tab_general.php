@@ -4,9 +4,6 @@
  */
  $calc = new Consap_Shipping_class();
 
- $csv = null;
-
-
  if( isset($_POST['save_general']) ){
      $calc->update_option('fuel_subcharge', esc_attr( $_POST['expandore_shipping_fuel_subcharge'] ));
      $calc->update_option('safety_factor', esc_attr( $_POST['expandore_shipping_safety_factor'] ));
