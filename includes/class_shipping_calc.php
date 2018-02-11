@@ -131,7 +131,14 @@ class Consap_Shipping_Class{
         return $wpdb->query("DELETE FROM ". $wpdb->prefix ."expandore_shipping WHERE provider='". sanitize_title( esc_attr( $provider )) ."' AND package='". sanitize_title( esc_attr( $package )) ."' AND type='rate'");
     }
 
-
+    /**
+     * Add new package
+     * 
+     * @since 1.0
+     * @param string $provider
+     * @param string $package
+     * @return void;
+     */
     public function add_package($provider, $package){
         global $wpdb;
 
@@ -147,6 +154,36 @@ class Consap_Shipping_Class{
         ));
     }
 
+    /**
+     * Disable all package
+     * 
+     * @return void
+     */
+    public function disable_package(){
+        global $wpdb;
+
+        $wpdb->update($wpdb->prefix .'expandore_shipping', array('condition_value' => false), array('type' => 'package'));
+    }
+
+    /**
+     * Enable specific package
+     * 
+     * @param string $package
+     * @return void
+     */
+    public function enable_package($package){
+        global $wpdb;
+
+        $wpdb->update( $wpdb->prefix .'expandore_shipping', array('condition_value' => true), array('type' => 'package', 'value' => $package));
+    }
+
+    /**
+     * Get all package
+     * 
+     * @since 1.0
+     * @param bolean $enableOnly
+     * @return array
+     */
     public function get_packages($enableOnly=false){
         global $wpdb;
         $sql = '';        
@@ -156,6 +193,16 @@ class Consap_Shipping_Class{
         return $wpdb->get_results("SELECT name, condition_value, value FROM ". $wpdb->prefix ."expandore_shipping WHERE type='package'". $sql);
     }
 
+    /**
+     * Get calculated shipping cost
+     * 
+     * @since 1.0
+     * @param int $weight
+     * @param string $country
+     * @param string $city
+     * @param string $postcode
+     * @return array
+     */
     public function get_shipping($weight, $country, $city, $postcode){
         global $wpdb;        
 
@@ -185,6 +232,13 @@ class Consap_Shipping_Class{
         return $shipping;
     }
 
+    /**
+     * Round UP and set 2 digit
+     * 
+     * @since 1.0
+     * @param int $num
+     * @return int
+     */
     private function round($num){
         $round = round($num * 2) / 2;
         if( $num > $round){

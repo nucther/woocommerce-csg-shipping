@@ -37,6 +37,9 @@ if( isset($_POST['upload_csv'])){
             $provider = 'TNT';
             $package = 'default';
             break;
+        case 'cz_other': 
+            $type = 'country zone';
+            break;
         case 'rate_fedex': 
             $type = 'shipping rate';
             $provider = 'FedEx';
@@ -51,6 +54,9 @@ if( isset($_POST['upload_csv'])){
             $type = 'shipping rate';
             $provider = 'TNT';
             $package = 'default';
+            break;
+        case 'rate_other': 
+            $type = 'shipping rate';
             break;
     }
 }
@@ -68,9 +74,11 @@ if( isset($_POST['upload_csv'])){
                             <option value="cz_fedex">Country Zone FedEx</option>
                             <option value="cz_dhl">Country Zone DHL</option>
                             <option value="cz_tnt">Country Zone TNT</option>
+                            <option value="cz_other">Country Zone Other</option>
                             <option value="rate_fedex">Shipping Rate FedEx</option>
                             <option value="rate_dhl">Shipping Rate DHL</option>
                             <option value="rate_tnt">Shipping Rate TNT</option>
+                            <option value="rate_other">Shipping Rate Other</option>
                         </select>
                     </td>
                 </tr>
