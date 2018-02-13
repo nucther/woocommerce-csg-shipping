@@ -22,7 +22,7 @@
             <tbody>
                 <tr>
                     <th class="titledesc">
-                        Fuel Subcharge
+                        Fuel Surcharge
                         <span class="woocommerce-help-tip" data-tip="Fuel subcharge in percentage (%)"></span>
                     </th>
                     <td class="forminp">
