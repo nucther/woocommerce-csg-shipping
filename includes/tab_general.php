@@ -7,10 +7,9 @@
  if( isset($_POST['save_general']) ){
      $calc->update_option('fuel_subcharge', esc_attr( $_POST['expandore_shipping_fuel_subcharge'] ));
      $calc->update_option('safety_factor', esc_attr( $_POST['expandore_shipping_safety_factor'] ));
+     $calc->disable_package();
      if( isset($_POST['packages'])){
-        $calc->disable_package();
-
-        foreach($_POST['packages'] as $package){
+        foreach($_POST['packages'] as $package){            
             $calc->enable_package($package);
         }
      }

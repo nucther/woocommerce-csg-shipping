@@ -178,6 +178,18 @@ class Consap_Shipping_Class{
     }
 
     /**
+     * Delete Package
+     * 
+     * @param string $package
+     * @return void
+     */
+    public function delete_package($package){
+        global $wpdb;
+
+        $wpdb->delete( $wpdb->prefix .'expandore_shipping', array('value' => $package));
+    }
+
+    /**
      * Get all package
      * 
      * @since 1.0
@@ -223,12 +235,16 @@ class Consap_Shipping_Class{
         foreach($_shipping_zone as $sz){
             $cost = $wpdb->get_results("SELECT provider,package, value from ". $wpdb->prefix ."expandore_shipping WHERE type='rate' AND provider='". $sz['provider'] ."' AND condition_value='". $sz['zone'] ."' AND name='". $weight ."'");
             
-            $shipping[] = array(
-                'id' => $cost[0]->provider.'_'. $cost[0]->package,
-                'cost' => $cost[0]->value
-            );
+            if( $cost[0]->value > 0){
+                $shipping[] = array(
+                    'id' => $cost[0]->provider.'_'. $cost[0]->package,
+                    'cost' => $cost[0]->value
+                );
+            }
+            error_log( $cost[0]->provider.'_'. $cost[0]->package .'=>'. $cost[0]->value);
         }
         
+        usort($shipping, array('Consap_Shipping_Class', 'usort'));
         return $shipping;
     }
 
@@ -247,6 +263,18 @@ class Consap_Shipping_Class{
         else {
             return sprintf('%0.2f', $round );
         }
+    }
+
+    public function usort($a, $b){
+        if ( $a['cost'] < $b['cost'] ) 
+            return -1;
+        else 
+            return 1;
+
+        if ( $b['cost'] < $a['cost'] ) 
+            return -1;        
+        else 
+            return 1;
     }
     
 }

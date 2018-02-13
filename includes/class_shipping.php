@@ -50,6 +50,9 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
             case 'import': 
                 require_once EXPANDORE_PATH .'/includes/tab_import.php';
                 break;
+            case 'uploaded':
+                require_once EXPANDORE_PATH .'/includes/tab_uploaded.php';
+                break;
             default: 
                 require_once EXPANDORE_PATH .'/includes/tab_general.php';
                 break;
@@ -61,6 +64,7 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
         $tabs = array(
             'general' => __('General', 'consap'),
             'import' => __('Import CSV', 'consap'),
+            'uploaded' => __('Delete', 'consap'),
         );
 
         $html = '<h2 class="nav-tab-wrapper">';
