@@ -109,6 +109,11 @@ if( isset($_POST['upload_csv'])){
                                     while( ($data = fgetcsv($handle, 1000, ',') ) !== FALSE ){
                                         $head =  strtolower( $data[0] );
                                         switch( $head ){
+                                            case 'name provider':
+                                                if(empty($provider)){
+                                                    $provider = $data[1];                                                
+                                                }
+                                                break;
                                             case 'package':
                                                 $package = $data[1];
                                                 $calc->add_package($provider, $package);
