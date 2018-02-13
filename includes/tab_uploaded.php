@@ -8,7 +8,8 @@
 
  if( isset($_POST['deleteDB'])){
     foreach(($_POST['delete']) as $db){
-        if(strpos('_', $db)){
+        echo $db.' => '. strpos($db, '_');
+        if(strpos($db,'_')){
             $split = split('_', $db);
             
             $calc->clean_rate($db[0], $db[1]);
