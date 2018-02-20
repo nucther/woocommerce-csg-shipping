@@ -110,12 +110,13 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
                 $cost = $cost * $sf;                
             }
             
-
-            $this->add_rate(array(
-                'id' => $this->get_rate_id($shipping['id']),
-                'label' => $provider,
-                'cost' => $cost
-            ));
+            if( $package[0]->condition_value){
+                $this->add_rate(array(
+                    'id' => $this->get_rate_id($shipping['id']),
+                    'label' => $provider,
+                    'cost' => $cost
+                ));
+            }
         }
         
     }

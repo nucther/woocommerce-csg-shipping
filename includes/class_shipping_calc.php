@@ -240,8 +240,7 @@ class Consap_Shipping_Class{
                     'id' => $cost[0]->provider.'_'. $cost[0]->package,
                     'cost' => $cost[0]->value
                 );
-            }
-            error_log( $cost[0]->provider.'_'. $cost[0]->package .'=>'. $cost[0]->value);
+            }            
         }
         
         usort($shipping, array('Consap_Shipping_Class', 'usort'));

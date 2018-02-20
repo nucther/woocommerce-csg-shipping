@@ -6,12 +6,10 @@
 
  $calc = new Consap_Shipping_class();
 
- if( isset($_POST['deleteDB'])){
-    foreach(($_POST['delete']) as $db){
-        echo $db.' => '. strpos($db, '_');
-        if(strpos($db,'_')){
+ if( isset($_POST['deleteselected'])){
+    foreach(($_POST['delete']) as $db){        
+        if(strpos($db,'_') > -1){
             $split = split('_', $db);
-            
             $calc->clean_rate($db[0], $db[1]);
             $calc->delete_package($db);
         }
@@ -37,5 +35,5 @@
         </tbody>
     </table>
     <br><br>
-    <input type="submit" name="deleteDB" value="Delete">
+    <input type="submit" name="deleteselected" value="Delete selected">
 </div>
