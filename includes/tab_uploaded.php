@@ -9,7 +9,7 @@
  if( isset($_POST['deleteselected'])){
     foreach(($_POST['delete']) as $db){        
         if(strpos($db,'_') > -1){
-            $split = split('_', $db);
+            $split = explode('_', $db);
             $calc->clean_rate($db[0], $db[1]);
             $calc->delete_package($db);
         }
