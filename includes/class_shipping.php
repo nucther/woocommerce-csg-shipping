@@ -97,7 +97,7 @@ class WC_Consap_Expandore_Shipping_method extends WC_Shipping_Method{
         $shippings = $calc->get_shipping($weight, $country, $city, $postcode);
         
         foreach($shippings as $shipping){
-            $package = $wpdb->get_results("SELECT provider, package FROM ". $wpdb->prefix ."expandore_shipping WHERE value='". $shipping['id'] ."'");
+            $package = $wpdb->get_results("SELECT provider, package, condition_value FROM ". $wpdb->prefix ."expandore_shipping WHERE value='". $shipping['id'] ."'");
             
             $provider = $package[0]->provider;
             $cost = $shipping['cost'];
